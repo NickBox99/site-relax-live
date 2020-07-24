@@ -44,9 +44,9 @@ const burgetMenu = () => {
     //кнопка вверх
     btnFooter = document.getElementsByClassName("button-footer")[0],
     //Полный список
-    pupupRepair = document.querySelector(".popup-repair-types");
-
-  //Политика конфедициальности
+    pupupRepair = document.querySelector(".popup-repair-types"),
+    //Политика конфедициальности
+    popupPrivacy = document.querySelector(".popup-privacy");
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -76,6 +76,14 @@ const burgetMenu = () => {
       target.closest(".popup-repair-types")
     ) {
       pupupRepair.style.visibility = "hidden";
+    } else if (target.classList.contains("link-privacy")) {
+      popupPrivacy.style.visibility = "visible";
+    } else if (
+      target.classList.contains("close") &&
+      target.closest(".popup-privacy")
+    ) 
+    {
+        popupPrivacy.style.visibility = "hidden";
     }
   });
 };
