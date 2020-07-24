@@ -776,7 +776,7 @@ template, [hidden] {
       position: relative;
       margin-left: auto;
       margin-right: auto;
-      opacity: 0.4;
+      opacity: 0;
       font-size: 18px; }
       .formula-slider__slide:before {
         position: absolute;

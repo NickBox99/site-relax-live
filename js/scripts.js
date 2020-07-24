@@ -50,6 +50,7 @@ const burgetMenu = () => {
 
   document.addEventListener("click", (event) => {
     const target = event.target;
+    console.log("target: ", target);
 
     const scroll = (href) => {
       event.preventDefault();
@@ -59,7 +60,11 @@ const burgetMenu = () => {
 
     if (target === btnMenu) {
       popupMenu.style.transform = "translate3d(0, 0, 0)";
-    } else if (target === btnClose) {
+    } else if (
+      target === btnClose ||
+      (popupMenu.style.transform === "translate3d(0px, 0px, 0px)" &&
+        !target.closest(".popup-dialog-menu"))
+    ) {
       popupMenu.removeAttribute("style");
     } else if (target.closest(".popup-menu-nav__item")) {
       scroll(target.getAttribute("href"));
@@ -72,18 +77,19 @@ const burgetMenu = () => {
       popupMenu.removeAttribute("style");
       pupupRepair.style.visibility = "visible";
     } else if (
-      target.classList.contains("close") &&
-      target.closest(".popup-repair-types")
+      (target.classList.contains("close") &&
+        target.closest(".popup-repair-types")) ||
+      target === pupupRepair
     ) {
       pupupRepair.style.visibility = "hidden";
     } else if (target.classList.contains("link-privacy")) {
       popupPrivacy.style.visibility = "visible";
     } else if (
-      target.classList.contains("close") &&
-      target.closest(".popup-privacy")
-    ) 
-    {
-        popupPrivacy.style.visibility = "hidden";
+      (target.classList.contains("close") &&
+        target.closest(".popup-privacy")) ||
+      target === popupPrivacy
+    ) {
+      popupPrivacy.style.visibility = "hidden";
     }
   });
 };
@@ -132,6 +138,85 @@ function maskPhone(selector, masked = "+7 (___) ___-__-__") {
   }
 }
 
+//Подсказка
+const helperDestop = () => {
+  const formula = document.querySelector(".formula"),
+    formulaItems = document.querySelectorAll(".formula-item__icon-inner-text");
+
+  formula.addEventListener("mouseover", (event) => {
+    const target = event.target;
+
+    if (target.closest(".formula-item__icon-inner-text")) {
+      formulaItems.forEach((element) => {
+        if (element === target) {
+          const link = formula.querySelector(
+            ".formula-item-popup-" + element.textContent
+          );
+
+          link.style.visibility = "visible";
+          link.parentNode.parentNode.classList.add("active-item");
+          link.style.opacity = 1;
+        }
+      });
+    }
+  });
+
+  formula.addEventListener("mouseout", (event) => {
+    const target = event.target;
+
+    if (target.closest(".formula")) {
+      formulaItems.forEach((element) => {
+        const link = formula.querySelector(
+          ".formula-item-popup-" + element.textContent
+        );
+
+        link.parentNode.parentNode.classList.remove("active-item");
+        link.style.visibility = "hidden";
+      });
+    }
+  });
+};
+
+//Подсказка мобильная версия
+const helperMobile = () => {
+  const formula = document.querySelector(".formula"),
+    formulaItem = formula.querySelectorAll(".formula-slider__slide");
+  let nowSlide = 0;
+
+  formulaItem.forEach((elem) => {
+    elem.style.display = "none";
+  });
+
+  const changeSlide = (slide) => {
+    formulaItem[nowSlide].classList.remove("active-item");
+    formulaItem[nowSlide].style.display = "none";
+
+    nowSlide = slide;
+
+    if (nowSlide < 0) {
+      nowSlide = formulaItem.length - 1;
+    } else if (nowSlide >= formulaItem.length) {
+      nowSlide = 0;
+    }
+
+    formulaItem[nowSlide].style.display = "flex";
+    setTimeout(() => {
+      formulaItem[nowSlide].classList.add("active-item");
+    }, 350);
+  };
+
+  changeSlide(0);
+
+  formula.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (target.closest("#formula-arrow_left")) {
+      changeSlide(nowSlide - 1);
+    } else if (target.closest("#formula-arrow_right")) {
+      changeSlide(nowSlide + 1);
+    }
+  });
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   //Список телефонов
@@ -147,4 +232,11 @@ document.addEventListener("DOMContentLoaded", () => {
   maskPhone("#feedback-input4");
   maskPhone("#feedback-input5");
 
+  //Подсказка
+  // helper();
+  if (document.documentElement.clientWidth >= 1025) {
+    helperDestop();
+  } else {
+    helperMobile();
+  }
 });
