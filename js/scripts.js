@@ -25,6 +25,30 @@ const listPhone = () => {
 
 };
 
+//Бургер меню
+const burgetMenu = () => {
+    const btnMenu = document.getElementsByClassName("menu__icon")[0],
+      popupMenu = document.getElementsByClassName("popup-dialog-menu")[0],
+      btnClose = document.getElementsByClassName("close-menu")[0];
+
+    
+    document.addEventListener("click", (event) => {
+        const target = event.target;
+        console.log('target: ', target);
+        console.log(target.closest(".popup-menu"));
+        if (target === btnMenu){
+            popupMenu.style.transform = "translate3d(0, 0, 0)";
+        }else if(target === btnClose){
+            popupMenu.removeAttribute("style");
+        }
+          
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    //Список телефонов
     listPhone();
+
+    //Бургер меню
+    burgetMenu();
 });
