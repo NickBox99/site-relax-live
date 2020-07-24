@@ -366,11 +366,13 @@ template, [hidden] {
           opacity: 0; }
     .header-contacts__arrow {
       cursor: pointer;
-      -webkit-transition: 0.5s;
-      transition: 0.5s; }
+       }
       .header-contacts__arrow img {
         margin-top: 12px;
-        margin-left: 5px; }
+        margin-left: 5px;
+        -webkit-transition: 0.8s;
+        transition: 0.5s;
+       }
     .header-contacts__messagers {
       display: -webkit-box;
       display: -ms-flexbox;
