@@ -6,6 +6,9 @@
   font-style: normal;
   font-weight: normal; }
 
+.types-repair--hide {
+  display: none;
+}
 html {
   line-height: 1.15;
   -webkit-text-size-adjust: 100%; }

@@ -9,7 +9,6 @@ const listPhone = () => {
     )[0];
 
   btnArrow.addEventListener("click", () => {
-    console.log(1);
     if (arrow.style.transform === "rotate(180deg)") {
       div.style.position = "absolute";
       arrow.style.transform = "rotate(0)";
@@ -50,7 +49,6 @@ const burgetMenu = () => {
 
   document.addEventListener("click", (event) => {
     const target = event.target;
-    console.log("target: ", target);
 
     const scroll = (href) => {
       event.preventDefault();
@@ -218,6 +216,134 @@ const helperMobile = () => {
   });
 };
 
+//Слайдер: Виды ремонта
+const repairSlider = () => {
+  const repair = document.getElementById("repair-types");
+
+  //возвращает текущий слайдер
+  const getSlider = () => {
+    const sliders = repair.querySelectorAll(".repair-types-slider > div");
+    let activeSlider;
+    sliders.forEach((slider) => {
+      if (!slider.classList.contains("types-repair--hide")) {
+        activeSlider = slider;
+      }
+    });
+    return activeSlider;
+  }
+
+  //свап слайдев
+  const swapSliders = (num) => {
+    const activeSlider = getSlider(),
+    sliders = activeSlider.querySelectorAll(".repair-types-slider__slide"),
+      thisSlideText = repair.querySelector(
+        ".slider-counter-content__current"
+      );
+    let
+      thisSlide = +thisSlideText.textContent - 1,
+      maxCount = sliders.length - 1;
+
+    sliders[thisSlide].style.display = "none";
+
+    thisSlide += num;
+
+    if(thisSlide > maxCount){
+      thisSlide = 0;
+    }else if(thisSlide < 0){
+      thisSlide = maxCount;
+    }
+
+    sliders[thisSlide].style.display = "block";
+    thisSlideText.textContent = thisSlide + 1;
+  }
+
+  let countSlideNav = 0;
+  //свап нав бара
+  const swapNav = (to) => {
+    const listNav = repair.querySelector(".nav-list-repair"),
+      slide = repair.querySelectorAll(".repair-types-nav__item");
+    let scroll;
+    const text = listNav.style.transform;
+    if (text === "") {
+      scroll = 0;
+    } else {
+      scroll = +text.slice(11, text.length - 3);
+    }
+
+    let scrolTo = slide[countSlideNav].offsetWidth + 11;
+    console.log('scrolTo: ', scrolTo);
+    if(to === "right"){
+      scroll -= scrolTo;
+      countSlideNav++;
+    }else{
+      scroll += scrolTo;
+      countSlideNav--;
+    }
+
+    if (countSlideNav >= slide.length)
+    {
+      scroll = 0;
+      countSlideNav = 0;
+    }else if (countSlideNav < 0){
+      countSlideNav = slide.length - 1;
+      let summ = 0;
+      slide.forEach((elem) => {
+        summ += elem.offsetWidth + 11;
+      });
+      scrolTo = slide[countSlideNav].offsetWidth + 11;
+      scroll = (summ - scrolTo) * -1;
+    }
+            
+    listNav.style.transform = `translateX(${scroll}px)`;
+  }
+
+  repair.addEventListener("click", (event) => {
+    const target = event.target;
+   
+    if (target.closest(".repair-types-nav__item")) {
+      const buttons = repair.querySelectorAll(".repair-types-nav__item"),
+        repairTypesSlider = repair.querySelectorAll(
+          ".repair-types-slider > div"
+        ),
+        sliderCounter = repair.querySelector(".slider-counter-content__total");
+
+      buttons.forEach((elem, index) => {
+        if (elem === target) {
+          elem.classList.add("active");
+          repairTypesSlider[index].classList.remove("types-repair--hide");
+          sliderCounter.textContent = repairTypesSlider[index].querySelectorAll(
+            "img"
+          ).length;
+          
+          const sliders = repairTypesSlider[index].querySelectorAll(
+            ".repair-types-slider__slide"
+          );
+          sliders.forEach((elem) => {
+            elem.style.display = "none";
+          });
+          sliders[0].style.display = "block";
+          repair.querySelector(".slider-counter-content__current").textContent = 1;
+        } else {
+          elem.classList.remove("active");
+          repairTypesSlider[index].classList.add("types-repair--hide");
+        }
+      });
+    } else if (target.closest("#repair-types-arrow_right")) {
+      swapSliders(1);
+    } else if (target.closest("#repair-types-arrow_left")) {
+      swapSliders(-1);
+    }
+
+    if (document.documentElement.clientWidth < 1025) {
+      if (target.closest("#nav-arrow-repair-right_base")) {
+        swapNav("right");
+      } else if (target.closest("#nav-arrow-repair-left_base")) {
+        swapNav("left");
+      }
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   //Список телефонов
   listPhone();
@@ -233,10 +359,12 @@ document.addEventListener("DOMContentLoaded", () => {
   maskPhone("#feedback-input5");
 
   //Подсказка
-  // helper();
   if (document.documentElement.clientWidth >= 1025) {
     helperDestop();
   } else {
     helperMobile();
   }
+
+  //Слайдер: Виды ремонта
+  repairSlider();
 });
