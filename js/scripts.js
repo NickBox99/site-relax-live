@@ -456,4 +456,15 @@ document.addEventListener("DOMContentLoaded", () => {
     //   document.getElementById("portfolio-arrow-mobile_right").click(); // вызвать клик на кнопку
     // }, 2000); // через две секунды
   }
+
+  //Слайдер: Документы
+  if (document.documentElement.clientWidth <= 1090){
+    new Slider({
+      containerId: "transparency",
+      slidersSelector: ".transparency-item",
+      arrowLeft: "#transparency-arrow_left",
+      arrowRight: "#transparency-arrow_right",
+      display: "flex",
+    }).init();
+  }
 });
