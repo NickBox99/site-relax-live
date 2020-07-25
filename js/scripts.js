@@ -10,12 +10,12 @@ const listPhone = () => {
 
   btnArrow.addEventListener("click", () => {
     if (arrow.style.transform === "rotate(180deg)") {
-      div.style.position = "absolute";
       arrow.style.transform = "rotate(0)";
       div.querySelector("a").style.opacity = 0;
+      div.style.position = "absolute";
     } else {
-      div.style.position = "relative";
       arrow.style.transform = "rotate(180deg)";
+      div.style.position = "relative";
       div.querySelector("a").style.opacity = 1;
     }
   });
@@ -61,7 +61,7 @@ const burgetMenu = () => {
     } else if (
       target === btnClose ||
       (popupMenu.style.transform === "translate3d(0px, 0px, 0px)" &&
-        !target.closest(".popup-dialog-menu"))
+        !target.closest("." + popupMenu.classList[0]))
     ) {
       popupMenu.removeAttribute("style");
     } else if (target.closest(".popup-menu-nav__item")) {
@@ -94,14 +94,13 @@ const burgetMenu = () => {
 
 //Маска для телефона
 function maskPhone(selector, masked = "+7 (___) ___-__-__") {
-  const elems = document.querySelectorAll(selector);
+  const elems = document.querySelectorAll("#" + selector);
 
   function mask(event) {
     const keyCode = event.keyCode;
     const template = masked,
       def = template.replace(/\D/g, ""),
       val = this.value.replace(/\D/g, "");
-    console.log(template);
     let i = 0,
       newValue = template.replace(/[_\d]/g, function (a) {
         return i < val.length ? val.charAt(i++) || def.charAt(i) : a;
@@ -176,172 +175,158 @@ const helperDestop = () => {
 };
 
 //Подсказка мобильная версия
-const helperMobile = () => {
-  const formula = document.querySelector(".formula"),
-    formulaItem = formula.querySelectorAll(".formula-slider__slide");
-  let nowSlide = 0;
-
-  formulaItem.forEach((elem) => {
-    elem.style.display = "none";
-  });
-
-  const changeSlide = (slide) => {
-    formulaItem[nowSlide].classList.remove("active-item");
-    formulaItem[nowSlide].style.display = "none";
-
-    nowSlide = slide;
-
-    if (nowSlide < 0) {
-      nowSlide = formulaItem.length - 1;
-    } else if (nowSlide >= formulaItem.length) {
-      nowSlide = 0;
-    }
-
-    formulaItem[nowSlide].style.display = "flex";
-    setTimeout(() => {
-      formulaItem[nowSlide].classList.add("active-item");
-    }, 350);
-  };
-
-  changeSlide(0);
-
-  formula.addEventListener("click", (event) => {
-    const target = event.target;
-
-    if (target.closest("#formula-arrow_left")) {
-      changeSlide(nowSlide - 1);
-    } else if (target.closest("#formula-arrow_right")) {
-      changeSlide(nowSlide + 1);
-    }
-  });
-};
-
 //Слайдер: Виды ремонта
-const repairSlider = () => {
-  const repair = document.getElementById("repair-types");
+class Slider {
+  constructor({
+    containerId,
+    slidersSelector,
+    visibleSlide,
+    arrowLeft,
+    arrowRight,
+    activeClass,
+    display,
+    counterNow,
+    counterMax,
+    bottons,
+    activeClassToButton,
+    type,
+    arrowOffOnLastSlide
+  }) {
+    this.container = document.getElementById(containerId);
+    this.sliders = this.container.querySelectorAll(slidersSelector);
+    this.slideNumber = 0;
+    this.visibleSlide = (visibleSlide)? +visibleSlide : 1;
+    this.maxSlideCount = this.sliders.length;
+    this.activeClass = activeClass;
+    this.arrowLeft = this.container.querySelector(arrowLeft);
+    this.arrowRight = this.container.querySelector(arrowRight);
+    this.display = display;
+    this.counterNow = this.container.querySelector(counterNow);
+    this.counterMax = this.container.querySelector(counterMax);
+    this.bottons = this.container.querySelectorAll(bottons);
+    this.activeClassToButton = activeClassToButton;
+    this.type = type;
+    this.arrowOffOnLastSlide = arrowOffOnLastSlide;
+  }
 
-  //возвращает текущий слайдер
-  const getSlider = () => {
-    const sliders = repair.querySelectorAll(".repair-types-slider > div");
-    let activeSlider;
-    sliders.forEach((slider) => {
-      if (!slider.classList.contains("types-repair--hide")) {
-        activeSlider = slider;
+  init() {
+    if (this.type !== "transform"){
+      this.setVisibleSlide();
+    }
+    if (this.counterNow) {
+      this.counterNow.textContent = this.slideNumber + 1;
+    }
+    if (this.counterMax) {
+      this.counterMax.textContent = this.maxSlideCount;
+    }
+    if (this.arrowOffOnLastSlide && this.arrowOffOnLastSlide === true) {
+      this.setVisibleArrow();
+    }
+    this.addEventListener();
+  }
+
+  setVisibleSlide(start = 0){
+
+    this.sliders.forEach((elem) => (elem.style.display = "none"));
+
+    for (let i = 0; i < this.maxSlideCount && i < this.visibleSlide; i++) {
+      this.sliders[i + start].style.display = this.display;
+    }
+    
+  }
+
+  slideTo(slideNumber) {
+    const visivleSlide = this.visibleSlide - 1;
+    if (this.activeClass) {
+      this.sliders[this.slideNumber].classList.remove(this.activeClass);
+    }
+    if (this.activeClassToButton) {
+      this.bottons[this.slideNumber].classList.remove(this.activeClassToButton);
+    }
+    if (this.type !== "transform"){
+      
+    }
+
+    this.slideNumber = slideNumber;
+
+    if (this.slideNumber < 0) {
+      this.slideNumber = this.maxSlideCount - 1 - visivleSlide;
+    } else if (this.slideNumber + visivleSlide >= this.maxSlideCount) {
+      this.slideNumber = 0;
+    }
+
+    if (this.type !== "transform") {
+      this.setVisibleSlide(this.slideNumber);
+    }else{
+      let allWidth = 0;
+      for(let i = 0; i < this.slideNumber; i++){
+        let offsetWidth = this.sliders[i].offsetWidth;
+        allWidth += (offsetWidth * 0.049) + offsetWidth;
+      }
+      this.sliders[0].parentNode.style.transform = `translateX(${allWidth*-1}px)`;
+    }
+    
+    if (this.counterNow) {
+      this.counterNow.textContent = this.slideNumber + 1;
+    }
+
+    if (this.counterMax) {
+      this.counterMax.textContent = this.maxSlideCount;
+    }
+
+    if (this.activeClass) {
+      this.sliders[this.slideNumber].classList.add(this.activeClass);
+    }
+
+    if (this.activeClassToButton) {
+      this.bottons[this.slideNumber].classList.add(this.activeClassToButton);
+    }
+
+    if(this.arrowOffOnLastSlide && this.arrowOffOnLastSlide === true){
+      this.setVisibleArrow();
+    }
+  }
+
+  setVisibleArrow(){
+    if (this.slideNumber === 0) {
+      this.arrowLeft.style.display = "none";
+    } else if (this.slideNumber === this.maxSlideCount - 2 - this.visibleSlide) {
+      this.arrowRight.style.display = "none";
+    } else {
+      this.arrowLeft.style.display = "flex";
+      this.arrowRight.style.display = "flex";
+    }
+  }
+
+  slideNext() {
+    this.slideTo(this.slideNumber + 1);
+  }
+
+  slidePrev() {
+    this.slideTo(this.slideNumber - 1);
+  }
+
+  addEventListener() {
+    this.container.addEventListener("click", (event) => {
+      const target = event.target;
+
+      if (this.arrowLeft && this.arrowRight) {
+        if (target.closest("#" + this.arrowLeft.id)) {
+          this.slidePrev();
+        } else if (target.closest("#" + this.arrowRight.id)) {
+          this.slideNext();
+        }
+      }
+
+      if (this.bottons) {
+        this.bottons.forEach((elem, index) => {
+          if (target === elem) {
+            this.slideTo(index);
+          }
+        });
       }
     });
-    return activeSlider;
   }
-
-  //свап слайдев
-  const swapSliders = (num) => {
-    const activeSlider = getSlider(),
-    sliders = activeSlider.querySelectorAll(".repair-types-slider__slide"),
-      thisSlideText = repair.querySelector(
-        ".slider-counter-content__current"
-      );
-    let
-      thisSlide = +thisSlideText.textContent - 1,
-      maxCount = sliders.length - 1;
-
-    sliders[thisSlide].style.display = "none";
-
-    thisSlide += num;
-
-    if(thisSlide > maxCount){
-      thisSlide = 0;
-    }else if(thisSlide < 0){
-      thisSlide = maxCount;
-    }
-
-    sliders[thisSlide].style.display = "block";
-    thisSlideText.textContent = thisSlide + 1;
-  }
-
-  let countSlideNav = 0;
-  //свап нав бара
-  const swapNav = (to) => {
-    const listNav = repair.querySelector(".nav-list-repair"),
-      slide = repair.querySelectorAll(".repair-types-nav__item");
-    let scroll;
-    const text = listNav.style.transform;
-    if (text === "") {
-      scroll = 0;
-    } else {
-      scroll = +text.slice(11, text.length - 3);
-    }
-
-    let scrolTo = slide[countSlideNav].offsetWidth + 11;
-    console.log('scrolTo: ', scrolTo);
-    if(to === "right"){
-      scroll -= scrolTo;
-      countSlideNav++;
-    }else{
-      scroll += scrolTo;
-      countSlideNav--;
-    }
-
-    if (countSlideNav >= slide.length)
-    {
-      scroll = 0;
-      countSlideNav = 0;
-    }else if (countSlideNav < 0){
-      countSlideNav = slide.length - 1;
-      let summ = 0;
-      slide.forEach((elem) => {
-        summ += elem.offsetWidth + 11;
-      });
-      scrolTo = slide[countSlideNav].offsetWidth + 11;
-      scroll = (summ - scrolTo) * -1;
-    }
-            
-    listNav.style.transform = `translateX(${scroll}px)`;
-  }
-
-  repair.addEventListener("click", (event) => {
-    const target = event.target;
-   
-    if (target.closest(".repair-types-nav__item")) {
-      const buttons = repair.querySelectorAll(".repair-types-nav__item"),
-        repairTypesSlider = repair.querySelectorAll(
-          ".repair-types-slider > div"
-        ),
-        sliderCounter = repair.querySelector(".slider-counter-content__total");
-
-      buttons.forEach((elem, index) => {
-        if (elem === target) {
-          elem.classList.add("active");
-          repairTypesSlider[index].classList.remove("types-repair--hide");
-          sliderCounter.textContent = repairTypesSlider[index].querySelectorAll(
-            "img"
-          ).length;
-          
-          const sliders = repairTypesSlider[index].querySelectorAll(
-            ".repair-types-slider__slide"
-          );
-          sliders.forEach((elem) => {
-            elem.style.display = "none";
-          });
-          sliders[0].style.display = "block";
-          repair.querySelector(".slider-counter-content__current").textContent = 1;
-        } else {
-          elem.classList.remove("active");
-          repairTypesSlider[index].classList.add("types-repair--hide");
-        }
-      });
-    } else if (target.closest("#repair-types-arrow_right")) {
-      swapSliders(1);
-    } else if (target.closest("#repair-types-arrow_left")) {
-      swapSliders(-1);
-    }
-
-    if (document.documentElement.clientWidth < 1025) {
-      if (target.closest("#nav-arrow-repair-right_base")) {
-        swapNav("right");
-      } else if (target.closest("#nav-arrow-repair-left_base")) {
-        swapNav("left");
-      }
-    }
-  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -352,19 +337,123 @@ document.addEventListener("DOMContentLoaded", () => {
   burgetMenu();
 
   //Маска для телефона
-  maskPhone("#feedback-input1");
-  maskPhone("#feedback-input2");
-  maskPhone("#feedback-input3");
-  maskPhone("#feedback-input4");
-  maskPhone("#feedback-input5");
+  const listInputPhone = document.querySelectorAll("input[name='phone']");
+  listInputPhone.forEach((elem) => maskPhone(elem.id));
 
   //Подсказка
   if (document.documentElement.clientWidth >= 1025) {
     helperDestop();
   } else {
-    helperMobile();
+    new Slider({
+      containerId: "formula",
+      slidersSelector: ".formula-slider__slide",
+      arrowLeft: "#formula-arrow_left",
+      arrowRight: "#formula-arrow_right",
+      activeClass: "active-item",
+      display: "flex",
+    }).init();
   }
 
   //Слайдер: Виды ремонта
-  repairSlider();
+  let sliderRepairDop = new Slider({
+    containerId: "repair-types",
+    slidersSelector: `.types-repair1 > div`,
+    arrowLeft: "#repair-types-arrow_left",
+    arrowRight: "#repair-types-arrow_right",
+    activeClass: "active-item",
+    display: "block",
+    counterNow: ".slider-counter-content__current",
+    counterMax: ".slider-counter-content__total",
+  });
+  sliderRepairDop.init();
+
+  let sliderRepair = new Slider({
+    containerId: "repair-types",
+    slidersSelector: ".repair-types-slider > div",
+    bottons: ".nav-list > button",
+    display: "block",
+    activeClassToButton: "active",
+  });
+  sliderRepair.init();
+
+  const repairTypes = document.getElementById("repair-types");
+  repairTypes.addEventListener('click', (event) => {
+    const target = event.target;
+
+    if(target.parentNode.classList.contains("nav-list-repair")){
+      delete sliderRepairDop;
+      sliderRepairDop = new Slider({
+        containerId: "repair-types",
+        slidersSelector: `.types-repair${sliderRepair.slideNumber + 1} > div`,
+        arrowLeft: "#repair-types-arrow_left",
+        arrowRight: "#repair-types-arrow_right",
+        activeClass: "active-item",
+        display: "block",
+        counterNow: ".slider-counter-content__current",
+        counterMax: ".slider-counter-content__total",
+      });
+      sliderRepairDop.init();
+    }
+  });
+  
+  if (document.documentElement.clientWidth < 1025){
+    new Slider({
+      containerId: "repair-types",
+      slidersSelector: ".nav-list > button",
+      arrowLeft: "#nav-arrow-repair-left_base",
+      arrowRight: "#nav-arrow-repair-right_base",
+      type: "transform",
+    }).init();
+  }
+
+  //Слайдер: Портфолио
+  if (document.documentElement.clientWidth > 1140) {
+    new Slider({
+      containerId: "portfolio",
+      visibleSlide: "3",
+      slidersSelector: ".portfolio-slider__slide",
+      arrowLeft: "#portfolio-arrow_left",
+      arrowRight: "#portfolio-arrow_right",
+      display: "flex",
+      arrowOffOnLastSlide: true,
+    }).init();
+  } else if (document.documentElement.clientWidth > 900) {
+    new Slider({
+      containerId: "portfolio",
+      visibleSlide: "2",
+      slidersSelector: ".portfolio-slider__slide",
+      arrowLeft: "#portfolio-arrow_left",
+      arrowRight: "#portfolio-arrow_right",
+      display: "flex",
+      arrowOffOnLastSlide: true,
+    }).init();
+  } else if (document.documentElement.clientWidth > 900) {
+    new Slider({
+      containerId: "portfolio",
+      visibleSlide: "1",
+      slidersSelector: ".portfolio-slider__slide",
+      arrowLeft: "#portfolio-arrow_left",
+      arrowRight: "#portfolio-arrow_right",
+      display: "flex",
+      arrowOffOnLastSlide: true,
+    }).init();
+  } else {
+    new Slider({
+      containerId: "portfolio",
+      visibleSlide: "1",
+      slidersSelector: ".portfolio-slider-mobile .portfolio-slider__slide-frame",
+      arrowLeft: "#portfolio-arrow-mobile_left",
+      arrowRight: "#portfolio-arrow-mobile_right",
+      display: "flex",
+      arrowOffOnLastSlide: true,
+      counterNow: ".slider-counter-content__current",
+      counterMax: ".slider-counter-content__total",
+    }).init();
+
+    //P.s кнопку прожать не могу, этот коментарий уберу в финальной версии
+    // setInterval(function () {
+    //   // таймер-планировщик
+    //   document.getElementById("portfolio-arrow-mobile_right").click(); // вызвать клик на кнопку
+    // }, 2000); // через две секунды
+  }
 });
