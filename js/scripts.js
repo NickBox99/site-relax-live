@@ -427,7 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
       display: "flex",
       arrowOffOnLastSlide: true,
     }).init();
-  } else if (document.documentElement.clientWidth > 900) {
+  } else if (document.documentElement.clientWidth > 575) {
     new Slider({
       containerId: "portfolio",
       visibleSlide: "1",
@@ -468,12 +468,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }).init();
   }
 
+  //Слайдер: Отзывы
+  const reviewsSlider = new Slider({
+    containerId: "reviews",
+    slidersSelector: ".reviews-slider__slide",
+    arrowLeft: "#reviews-arrow_left",
+    arrowRight: "#reviews-arrow_right",
+    display: "flex"
+  });
+  reviewsSlider.init();
+  console.log(reviewsSlider.sliders);
 
 
 
-
-
-  //Карусель
+  //Слайдер: Карусель
   if (document.documentElement.clientWidth > 675){
     new Slider({
       containerId: "partners",
