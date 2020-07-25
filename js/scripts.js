@@ -467,4 +467,31 @@ document.addEventListener("DOMContentLoaded", () => {
       display: "flex",
     }).init();
   }
+
+
+
+
+
+
+  //Карусель
+  if (document.documentElement.clientWidth > 675){
+    new Slider({
+      containerId: "partners",
+      visibleSlide: "3",
+      slidersSelector: ".partners-slider__slide",
+      arrowLeft: "#partners-arrow_left",
+      arrowRight: "#partners-arrow_right",
+      display: "block",
+    }).init();
+  }else{
+    new Slider({
+      containerId: "partners",
+      visibleSlide: "1",
+      slidersSelector: ".partners-slider__slide",
+      arrowLeft: "#partners-arrow_left",
+      arrowRight: "#partners-arrow_right",
+      display: "block",
+    }).init();
+  }
+
 });
