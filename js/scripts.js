@@ -535,4 +535,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }).init();
   }
 
+  //Табы + слайдер
+  // let sliderDisingDop = new Slider({
+  //   containerId: "repair-types",
+  //   slidersSelector: `.types-repair1 > div`,
+  //   arrowLeft: "#repair-types-arrow_left",
+  //   arrowRight: "#repair-types-arrow_right",
+  //   activeClass: "active-item",
+  //   display: "block",
+  //   counterNow: ".slider-counter-content__current",
+  //   counterMax: ".slider-counter-content__total",
+  // });
+  // sliderRepairDop.init();
+
+  // let sliderRepair = new Slider({
+  //   containerId: "repair-types",
+  //   slidersSelector: ".repair-types-slider > div",
+  //   bottons: ".nav-list > button",
+  //   display: "block",
+  //   activeClassToButton: "active",
+  // });
+  // sliderRepair.init();
+
+  // const repairTypes = document.getElementById("repair-types");
+  // repairTypes.addEventListener("click", (event) => {
+  //   const target = event.target;
+
+  //   if (target.parentNode.classList.contains("nav-list-repair")) {
+  //     delete sliderRepairDop;
+  //     sliderRepairDop = new Slider({
+  //       containerId: "repair-types",
+  //       slidersSelector: `.types-repair${sliderRepair.slideNumber + 1} > div`,
+  //       arrowLeft: "#repair-types-arrow_left",
+  //       arrowRight: "#repair-types-arrow_right",
+  //       activeClass: "active-item",
+  //       display: "block",
+  //       counterNow: ".slider-counter-content__current",
+  //       counterMax: ".slider-counter-content__total",
+  //     });
+  //     sliderRepairDop.init();
+  //   }
+  // });
+
+  new Slider({
+    containerId: "designs",
+    slidersSelector: ".designs-nav__item",
+    arrowLeft: "#nav-arrow-designs_left",
+    arrowRight: "#nav-arrow-designs_right",
+    type: "transform",
+  }).init();
+
+  const test = new Slider({
+    containerId: "designs",
+    slidersSelector: ".designs-slider > div",
+    bottons: ".nav-list > button",
+    activeClassToButton: "active",
+    display: "block",
+  });
+  test.init();
+  console.log(test.sliders);
 });
