@@ -31,11 +31,8 @@ const smoothScroll = (identifier) => {
   });
 };
 
-//Бургер меню
-//Плавная прокрутка пунктов меню и кнопки вверх
-//Модальное окно: Полный список
-//Модальное окно: Политика конфедициальности
-const burgetMenu = () => {
+//события для модальных окон
+const modalAddEventListener = () => {
   //бургер
   const btnMenu = document.getElementsByClassName("menu__icon")[0],
     popupMenu = document.getElementsByClassName("popup-dialog-menu")[0],
@@ -45,7 +42,9 @@ const burgetMenu = () => {
     //Полный список
     pupupRepair = document.querySelector(".popup-repair-types"),
     //Политика конфедициальности
-    popupPrivacy = document.querySelector(".popup-privacy");
+    popupPrivacy = document.querySelector(".popup-privacy"),
+    //Договоры
+    popupTransparency = document.querySelector(".popup-transparency");
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -56,43 +55,70 @@ const burgetMenu = () => {
       popupMenu.removeAttribute("style");
     };
 
+    //открыть бургер меню
     if (target === btnMenu) {
       popupMenu.style.transform = "translate3d(0, 0, 0)";
-    } else if (
+    }
+    //закрыть бургер меню
+    else if (
       target === btnClose ||
       (popupMenu.style.transform === "translate3d(0px, 0px, 0px)" &&
         !target.closest("." + popupMenu.classList[0]))
     ) {
       popupMenu.removeAttribute("style");
-    } else if (target.closest(".popup-menu-nav__item")) {
+    }
+    //плавный скрол для элементов бургера
+    else if (target.closest(".popup-menu-nav__item")) {
       scroll(target.getAttribute("href"));
-    } else if (target.closest("." + btnFooter.classList[0])) {
+    }
+    //плавный скрол для кнопки ВВЕРХ
+    else if (target.closest("." + btnFooter.classList[0])) {
       scroll(btnFooter.querySelector("a").getAttribute("href"));
-    } else if (
+    }
+    //открыть модальное окно "Полный список услуг и цен"
+    else if (
       target.closest(".link-list-repair") ||
       target.closest(".link-list-menu")
     ) {
       popupMenu.removeAttribute("style");
       pupupRepair.style.visibility = "visible";
-    } else if (
+    }
+    //закрыть модальное окно "Полный список услуг и цен"
+    else if (
       (target.classList.contains("close") &&
         target.closest(".popup-repair-types")) ||
       target === pupupRepair
     ) {
       pupupRepair.style.visibility = "hidden";
-    } else if (target.classList.contains("link-privacy")) {
+    }
+    //открыть модальное окно "политика"
+    else if (target.classList.contains("link-privacy")) {
       popupPrivacy.style.visibility = "visible";
-    } else if (
+    }
+    //закрыть модальное окно "политика"
+    else if (
       (target.classList.contains("close") &&
         target.closest(".popup-privacy")) ||
       target === popupPrivacy
     ) {
       popupPrivacy.style.visibility = "hidden";
     }
+    //открыть модальное окно "Договоры"
+    else if (target.classList.contains("transparency-item__img")) {
+      popupTransparency.style.visibility = "visible";
+    }
+    //закрыть модальное окно "Договоры"
+    else if (
+      (target.classList.contains("close") &&
+        target.closest(".popup-transparency")) ||
+      target === popupTransparency
+    ) {
+      popupTransparency.style.visibility = "hidden";
+    }
   });
 };
 
-//Маска для телефона
+//Маска для телефона 
 function maskPhone(selector, masked = "+7 (___) ___-__-__") {
   const elems = document.querySelectorAll("#" + selector);
 
@@ -174,8 +200,7 @@ const helperDestop = () => {
   });
 };
 
-//Подсказка мобильная версия
-//Слайдер: Виды ремонта
+//Слайдеры
 class Slider {
   constructor({
     containerId,
@@ -190,12 +215,12 @@ class Slider {
     bottons,
     activeClassToButton,
     type,
-    arrowOffOnLastSlide
+    arrowOffOnLastSlide,
   }) {
     this.container = document.getElementById(containerId);
     this.sliders = this.container.querySelectorAll(slidersSelector);
     this.slideNumber = 0;
-    this.visibleSlide = (visibleSlide)? +visibleSlide : 1;
+    this.visibleSlide = visibleSlide ? +visibleSlide : 1;
     this.maxSlideCount = this.sliders.length;
     this.activeClass = activeClass;
     this.arrowLeft = this.container.querySelector(arrowLeft);
@@ -205,12 +230,12 @@ class Slider {
     this.counterMax = this.container.querySelector(counterMax);
     this.bottons = this.container.querySelectorAll(bottons);
     this.activeClassToButton = activeClassToButton;
-    this.type = type;
+    this.type = type ? type : "block";
     this.arrowOffOnLastSlide = arrowOffOnLastSlide;
   }
 
   init() {
-    if (this.type !== "transform"){
+    if (this.type !== "transform") {
       this.setVisibleSlide();
     }
     if (this.counterNow) {
@@ -225,14 +250,12 @@ class Slider {
     this.addEventListener();
   }
 
-  setVisibleSlide(start = 0){
-
+  setVisibleSlide(start = 0) {
     this.sliders.forEach((elem) => (elem.style.display = "none"));
 
     for (let i = 0; i < this.maxSlideCount && i < this.visibleSlide; i++) {
       this.sliders[i + start].style.display = this.display;
     }
-    
   }
 
   slideTo(slideNumber) {
@@ -242,9 +265,6 @@ class Slider {
     }
     if (this.activeClassToButton) {
       this.bottons[this.slideNumber].classList.remove(this.activeClassToButton);
-    }
-    if (this.type !== "transform"){
-      
     }
 
     this.slideNumber = slideNumber;
@@ -257,15 +277,17 @@ class Slider {
 
     if (this.type !== "transform") {
       this.setVisibleSlide(this.slideNumber);
-    }else{
+    } else {
       let allWidth = 0;
-      for(let i = 0; i < this.slideNumber; i++){
+      for (let i = 0; i < this.slideNumber; i++) {
         let offsetWidth = this.sliders[i].offsetWidth;
-        allWidth += (offsetWidth * 0.049) + offsetWidth;
+        allWidth += offsetWidth * 0.049 + offsetWidth;
       }
-      this.sliders[0].parentNode.style.transform = `translateX(${allWidth*-1}px)`;
+      this.sliders[0].parentNode.style.transform = `translateX(${
+        allWidth * -1
+      }px)`;
     }
-    
+
     if (this.counterNow) {
       this.counterNow.textContent = this.slideNumber + 1;
     }
@@ -282,15 +304,18 @@ class Slider {
       this.bottons[this.slideNumber].classList.add(this.activeClassToButton);
     }
 
-    if(this.arrowOffOnLastSlide && this.arrowOffOnLastSlide === true){
+    if (this.arrowOffOnLastSlide && this.arrowOffOnLastSlide === true) {
       this.setVisibleArrow();
     }
   }
 
-  setVisibleArrow(){
+  setVisibleArrow() {
     if (this.slideNumber === 0) {
       this.arrowLeft.style.display = "none";
-    } else if (this.slideNumber === this.maxSlideCount - 2 - this.visibleSlide) {
+    } else if (
+      this.slideNumber ===
+      this.maxSlideCount - 2 - this.visibleSlide
+    ) {
       this.arrowRight.style.display = "none";
     } else {
       this.arrowLeft.style.display = "flex";
@@ -334,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
   listPhone();
 
   //Бургер меню
-  burgetMenu();
+  modalAddEventListener();
 
   //Маска для телефона
   const listInputPhone = document.querySelectorAll("input[name='phone']");
@@ -467,6 +492,17 @@ document.addEventListener("DOMContentLoaded", () => {
       display: "flex",
     }).init();
   }
+  const openDocSlider = new Slider({
+    containerId: "popup-transparencyId",
+    slidersSelector: ".popup-transparency-slider__slide",
+    display: "flex",
+    arrowLeft: "#transparency_left",
+    arrowRight: "#transparency_right",
+    counterNow: ".slider-counter-content__current",
+    counterMax: ".slider-counter-content__total",
+  });
+  openDocSlider.init();
+  
 
   //Слайдер: Отзывы
   const reviewsSlider = new Slider({
@@ -477,9 +513,6 @@ document.addEventListener("DOMContentLoaded", () => {
     display: "flex"
   });
   reviewsSlider.init();
-  console.log(reviewsSlider.sliders);
-
-
 
   //Слайдер: Карусель
   if (document.documentElement.clientWidth > 675){
