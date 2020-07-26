@@ -44,7 +44,9 @@ const modalAddEventListener = () => {
     //Политика конфедициальности
     popupPrivacy = document.querySelector(".popup-privacy"),
     //Договоры
-    popupTransparency = document.querySelector(".popup-transparency");
+    popupTransparency = document.querySelector(".popup-transparency"),
+    //Disings
+    popupDising = document.querySelector(".popup-design");
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -114,6 +116,18 @@ const modalAddEventListener = () => {
       target === popupTransparency
     ) {
       popupTransparency.style.visibility = "hidden";
+    }
+    //открыть модальное окно "Disings"
+    else if (target.closest(".link-list-designs") && target.closest("a")) {
+      popupDising.style.visibility = "visible";
+    }
+    //закрыть модальное окно "Disings"
+    else if (
+      (target.classList.contains("close") &&
+        target.closest(".popup-design")) ||
+      target === popupDising
+    ) {
+      popupDising.style.visibility = "hidden";
     }
   });
 };
@@ -534,11 +548,6 @@ const tempFunc = () =>{
       display: "block",
     }).init();
   }
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  tempFunc(); //временная функция
 
   //Табы + слайдер
   let sliderDising = new Slider({
@@ -600,6 +609,58 @@ document.addEventListener("DOMContentLoaded", () => {
     type: "transform",
   });
   sliderDisingCarousel.init();
+}
 
 
+document.addEventListener("DOMContentLoaded", () => {
+  tempFunc(); //временная функция
+
+  
+
+  //Табы + слайдер (Модальное окно)
+  let sliderDisingModal = new Slider({
+    containerId: "popup-design",
+    slidersSelector: ".popup-design-slider > div",
+    bottons: ".nav-list > button",
+    display: "block",
+    activeClassToButton: "active",
+  });
+  sliderDisingModal.init();
+
+ let sliderDisingModalDop = new Slider({
+   containerId: "popup-design",
+   slidersSelector: `.popup-designs-slider__style1 > div`,
+   arrowLeft: "#popup_design_left",
+   arrowRight: "#popup_design_right",
+   display: "block",
+   counterNow: ".slider-counter-content__current",
+   counterMax: ".slider-counter-content__total",
+ });
+ sliderDisingModalDop.init();
+
+ const dicingModal = document.getElementById("popup-design");
+ dicingModal.addEventListener("click", (event) => {
+   const target = event.target;
+
+   if (target.parentNode.classList.contains("nav-list-designs")) {
+     delete sliderDisingModalDop;
+     let buttonContent = dicingModal.querySelector(".visible-content-block");
+     if (buttonContent) {
+       buttonContent.classList.remove("visible-content-block");
+       buttonContent = dicingModal.querySelectorAll(".popup-design-text");
+       buttonContent[sliderDisingModal.slideNumber].classList.add("visible-content-block");
+     }
+     sliderDisingModalDop = new Slider({
+       containerId: "popup-design",
+       slidersSelector: `.popup-designs-slider__style${sliderDisingModal.slideNumber + 1} > div`,
+       arrowLeft: "#popup_design_left",
+       arrowRight: "#popup_design_right",
+       display: "block",
+       counterNow: ".slider-counter-content__current",
+       counterMax: ".slider-counter-content__total",
+     });
+     sliderDisingModalDop.init();
+     
+   }
+ });
 });
