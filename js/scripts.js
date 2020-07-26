@@ -314,7 +314,7 @@ class Slider {
       this.arrowLeft.style.display = "none";
     } else if (
       this.slideNumber ===
-      this.maxSlideCount - 2 - this.visibleSlide
+      this.maxSlideCount - this.visibleSlide
     ) {
       this.arrowRight.style.display = "none";
     } else {
@@ -334,7 +334,6 @@ class Slider {
   addEventListener() {
     this.container.addEventListener("click", (event) => {
       const target = event.target;
-
       if (this.arrowLeft && this.arrowRight) {
         if (target.closest("#" + this.arrowLeft.id)) {
           this.slidePrev();
@@ -354,7 +353,8 @@ class Slider {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+//временная функция
+const tempFunc = () =>{
   //Список телефонов
   listPhone();
 
@@ -534,64 +534,72 @@ document.addEventListener("DOMContentLoaded", () => {
       display: "block",
     }).init();
   }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  tempFunc(); //временная функция
 
   //Табы + слайдер
-  // let sliderDisingDop = new Slider({
-  //   containerId: "repair-types",
-  //   slidersSelector: `.types-repair1 > div`,
-  //   arrowLeft: "#repair-types-arrow_left",
-  //   arrowRight: "#repair-types-arrow_right",
-  //   activeClass: "active-item",
-  //   display: "block",
-  //   counterNow: ".slider-counter-content__current",
-  //   counterMax: ".slider-counter-content__total",
-  // });
-  // sliderRepairDop.init();
-
-  // let sliderRepair = new Slider({
-  //   containerId: "repair-types",
-  //   slidersSelector: ".repair-types-slider > div",
-  //   bottons: ".nav-list > button",
-  //   display: "block",
-  //   activeClassToButton: "active",
-  // });
-  // sliderRepair.init();
-
-  // const repairTypes = document.getElementById("repair-types");
-  // repairTypes.addEventListener("click", (event) => {
-  //   const target = event.target;
-
-  //   if (target.parentNode.classList.contains("nav-list-repair")) {
-  //     delete sliderRepairDop;
-  //     sliderRepairDop = new Slider({
-  //       containerId: "repair-types",
-  //       slidersSelector: `.types-repair${sliderRepair.slideNumber + 1} > div`,
-  //       arrowLeft: "#repair-types-arrow_left",
-  //       arrowRight: "#repair-types-arrow_right",
-  //       activeClass: "active-item",
-  //       display: "block",
-  //       counterNow: ".slider-counter-content__current",
-  //       counterMax: ".slider-counter-content__total",
-  //     });
-  //     sliderRepairDop.init();
-  //   }
-  // });
-
-  new Slider({
-    containerId: "designs",
-    slidersSelector: ".designs-nav__item",
-    arrowLeft: "#nav-arrow-designs_left",
-    arrowRight: "#nav-arrow-designs_right",
-    type: "transform",
-  }).init();
-
-  const test = new Slider({
+  let sliderDising = new Slider({
     containerId: "designs",
     slidersSelector: ".designs-slider > div",
     bottons: ".nav-list > button",
-    activeClassToButton: "active",
     display: "block",
+    activeClassToButton: "active",
   });
-  test.init();
-  console.log(test.sliders);
+  sliderDising.init();
+
+ let sliderDisingDop = new Slider({
+   containerId: "designs",
+   slidersSelector: `.designs-slider__style1 > div`,
+   arrowLeft: "#design_left",
+   arrowRight: "#design_right",
+   display: "block",
+   counterNow: ".slider-counter-content__current",
+   counterMax: ".slider-counter-content__total",
+   activeClassToButton: "preview_active",
+   bottons: ".visible .preview-block__item-inner",
+ });
+ sliderDisingDop.init();
+
+ const dicing = document.getElementById("designs");
+ dicing.addEventListener("click", (event) => {
+   const target = event.target;
+
+   if (target.parentNode.classList.contains("nav-list-designs")) {
+     delete sliderDisingDop;
+     let buttonImg = dicing.querySelector(".visible");
+     if (buttonImg){
+      buttonImg.classList.remove("visible");
+      buttonImg = dicing.querySelectorAll(".preview-block");
+       buttonImg[sliderDising.slideNumber].classList.add("visible");
+     }
+     
+     sliderDisingDop = new Slider({
+       containerId: "designs",
+       slidersSelector: `.designs-slider__style${sliderDising.slideNumber + 1} > div`,
+       arrowLeft: "#design_left",
+       arrowRight: "#design_right",
+       display: "block",
+       counterNow: ".slider-counter-content__current",
+       counterMax: ".slider-counter-content__total",
+       activeClassToButton: "preview_active",
+       bottons: ".visible .preview-block__item-inner",
+     });
+     sliderDisingDop.init();
+     
+   }
+ });
+
+  let sliderDisingCarousel = new Slider({
+    containerId: "designs",
+    slidersSelector: ".nav-list > button",
+    arrowLeft: "#nav-arrow-designs_left",
+    arrowRight: "#nav-arrow-designs_right",
+    type: "transform",
+  });
+  sliderDisingCarousel.init();
+
+
 });
