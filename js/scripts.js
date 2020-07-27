@@ -46,7 +46,9 @@ const modalAddEventListener = () => {
     //Договоры
     popupTransparency = document.querySelector(".popup-transparency"),
     //Disings
-    popupDising = document.querySelector(".popup-design");
+    popupDising = document.querySelector(".popup-design"),
+    //Консультация
+    popupConsultation = document.querySelector(".popup-consultation");
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -123,11 +125,21 @@ const modalAddEventListener = () => {
     }
     //закрыть модальное окно "Disings"
     else if (
-      (target.classList.contains("close") &&
-        target.closest(".popup-design")) ||
+      (target.classList.contains("close") && target.closest(".popup-design")) ||
       target === popupDising
     ) {
       popupDising.style.visibility = "hidden";
+    }
+    //открыть модальное окно "Консультация"
+    else if (target.closest(".button_wide")) {
+      popupConsultation.style.visibility = "visible";
+    }
+    //закрыть модальное окно "Консультация"
+    else if (
+      (target.classList.contains("close") && target.closest(".popup-consultation")) ||
+      target === popupConsultation
+    ) {
+      popupConsultation.style.visibility = "hidden";
     }
   });
 };
