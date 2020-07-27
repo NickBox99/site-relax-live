@@ -48,7 +48,9 @@ const modalAddEventListener = () => {
     //Disings
     popupDising = document.querySelector(".popup-design"),
     //Консультация
-    popupConsultation = document.querySelector(".popup-consultation");
+    popupConsultation = document.querySelector(".popup-consultation"),
+    //Портфолио 
+    popupPortfolio = document.querySelector(".popup-portfolio");
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -157,13 +159,22 @@ const modalAddEventListener = () => {
           elem.classList.remove("msg-active");
         }
       })
-      console.log('elements: ', elements);
-
+    }
+    //открыть модальное окно "Портфолио"
+    else if (target.closest(".portfolio-slider__slide-frame")) {
+      popupPortfolio.style.visibility = "visible";
+    }
+    //закрыть модальное окно "Портфолио"
+    else if (
+      (target.classList.contains("close") && target.closest(".popup-portfolio")) ||
+      target === popupPortfolio
+    ) {
+      popupPortfolio.style.visibility = "hidden";
     }
   });
 };
 
-//Маска для телефона 
+//Маска для телефона popup-portfolio
 function maskPhone(selector, masked = "+7 (___) ___-__-__") {
   const elems = document.querySelectorAll("#" + selector);
 
@@ -208,7 +219,6 @@ function maskPhone(selector, masked = "+7 (___) ___-__-__") {
 
 //Подсказка
 const helper = (containerSelector, elements, popup, activeClass, activeClassFor) => {
-  console.log('activeClass: ', activeClass);
   const container = document.querySelector(containerSelector),
     items = document.querySelectorAll(elements);
 
@@ -549,6 +559,30 @@ const tempFunc = () =>{
     //   document.getElementById("portfolio-arrow-mobile_right").click(); // вызвать клик на кнопку
     // }, 2000); // через две секунды
   }
+
+  //Слайдер для модального окна: Портфолио
+  let sliderPortfolioModal = new Slider({
+    containerId: "popup-portfolio",
+    slidersSelector: `.popup-portfolio-slider__slide`,
+    arrowLeft: "#popup_portfolio_left",
+    arrowRight: "#popup_portfolio_right",
+    display: "block",
+    counterNow: ".slider-counter-content__current",
+    counterMax: ".slider-counter-content__total",
+  });
+  sliderPortfolioModal.init();
+
+  //Слайдер для модального окна: Портфолио(текст)
+  let sliderPortfolioModalText = new Slider({
+    containerId: "popup-portfolio",
+    slidersSelector: `.popup-portfolio-text`,
+    arrowLeft: "#popup_portfolio_left",
+    arrowRight: "#popup_portfolio_right",
+    display: "block",
+    counterNow: ".slider-counter-content__current",
+    counterMax: ".slider-counter-content__total",
+  });
+  sliderPortfolioModalText.init();
 
   //Слайдер: Документы
   const docSlider = new Slider({
