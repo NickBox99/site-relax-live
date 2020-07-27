@@ -49,8 +49,11 @@ const modalAddEventListener = () => {
     popupDising = document.querySelector(".popup-design"),
     //Консультация
     popupConsultation = document.querySelector(".popup-consultation"),
-    //Портфолио 
-    popupPortfolio = document.querySelector(".popup-portfolio");
+    //Портфолио
+    popupPortfolio = document.querySelector(".popup-portfolio"),
+    //Окно благодарности
+    popupThank = document.querySelector(".popup-thank");
+    
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -171,10 +174,21 @@ const modalAddEventListener = () => {
     ) {
       popupPortfolio.style.visibility = "hidden";
     }
+    //открыть модальное окно "Окно благодарности"
+    else if (target.closest(".portfolio-slider__slide-frame")) {
+      popupThank.style.visibility = "visible";
+    }
+    //закрыть модальное окно "Окно благодарности"
+    else if (
+      (target.classList.contains("close") && target.closest(".popup-thank")) ||
+      target === popupThank
+    ) {
+      popupThank.style.visibility = "hidden";
+    }
   });
 };
 
-//Маска для телефона popup-portfolio
+//Маска для телефона 
 function maskPhone(selector, masked = "+7 (___) ___-__-__") {
   const elems = document.querySelectorAll("#" + selector);
 
@@ -829,7 +843,7 @@ document.addEventListener("DOMContentLoaded", () => {
  sliderSchemeModalCarousel.init();
 
  //Ajax
-  const sendForm = (id) => {
+  const sendForm = (id, checker) => {
     const postData = (body) => {
       return fetch("./server.php", {
         method: "POST",
@@ -844,7 +858,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      let countPoints = 0; 
+      
+      if(!checker(id)){
+        console.error("Данные не заполнены");
+        return;
+      }
 
       const formData = new FormData(form);
       let body = {};
@@ -861,7 +879,8 @@ document.addEventListener("DOMContentLoaded", () => {
           for (let i = 0; i < elements.length; i++) {
             elements[i].value = "";
           }
-          console.log(123);
+          
+          document.querySelector(".popup-thank").style.visibility = "visible";
         })
         .catch((error) => {
           console.error(error);
@@ -869,10 +888,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  sendForm("feedback1");
-  // sendForm("feedback-input2");
-  // sendForm("feedback-input3");
-  // sendForm("feedback-input4");
-  // sendForm("feedback-input5");
-  // sendForm("feedback-input6");
+  //функция проверки
+  const checker = (id) =>{
+    const form = document.getElementById(id),
+      phone = form.querySelector(".feedback__input-input"),
+      checkbox = form.querySelector(".checkbox__input");
+
+      console.log("checkbox.checked: ", checkbox.checked);
+    if (phone.value.length !== 18){
+      phone.style.color = "red";
+      return false;
+    }else if(!checkbox.checked){
+      form.querySelector(".checkbox__descr_round-feedback").style.color = "red";
+      return false;
+    }
+    
+    return true;
+  }
+
+
+  sendForm("feedback1", checker);
+  sendForm("feedback2", checker);
+  sendForm("feedback3", checker);
+  sendForm("feedback4", checker);
+  sendForm("feedback5", checker);
+  sendForm("feedback6", checker);
 });
