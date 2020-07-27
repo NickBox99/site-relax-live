@@ -141,6 +141,25 @@ const modalAddEventListener = () => {
     ) {
       popupConsultation.style.visibility = "hidden";
     }
+    //клик по FAQ
+    else if (
+      target.closest("#faq") && target.classList.contains("title_block")
+    ) {
+      const elements = document.querySelectorAll("#faq li .title_block");
+      elements.forEach((elem) => {
+        if(elem === target){
+          if (target.classList.contains("msg-active")){
+             elem.classList.remove("msg-active");
+          }else{
+            elem.classList.add("msg-active");
+          }
+        }else{
+          elem.classList.remove("msg-active");
+        }
+      })
+      console.log('elements: ', elements);
+
+    }
   });
 };
 
@@ -774,4 +793,5 @@ document.addEventListener("DOMContentLoaded", () => {
    type: "transform",
  });
  sliderSchemeModalCarousel.init();
+
 });
