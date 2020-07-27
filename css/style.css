@@ -849,7 +849,6 @@ template, [hidden] {
           margin-left: -42px;
           margin-top: -42px; } }
   .formula-item {
-    position: relative;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -868,7 +867,7 @@ template, [hidden] {
     font-weight: 300;
     text-align: center;
     color: #000000;
-    z-index: 0; }
+     }
     .formula-item strong {
       font-weight: 500; }
     .formula-item__descr {
@@ -946,7 +945,8 @@ template, [hidden] {
       text-align: left;
       -webkit-transform: translate3d(0, -5px, 0);
       transform: translate3d(0, -5px, 0);
-      opacity: 0.1; }
+      opacity: 0.1;
+      z-index: 10; }
       .formula-item-popup p {
         padding-bottom: 15px; }
       @media (max-width: 1024px) {
@@ -1070,6 +1070,13 @@ template, [hidden] {
             .formula-item-popup-06:before {
               background: url("../images/formula/item_popup_1.svg") no-repeat;
               background-size: contain; } }
+.transform:before {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
 
 .repair-types {
   position: relative;
@@ -5855,6 +5862,7 @@ div.wave-block:nth-child(17):after {
       .active-item-partners svg path {
         fill: #B8A494; }
   .active-item .problems-item__icon {
+    color: #fff;
     width: 80px;
     height: 80px;
     -webkit-box-shadow: 0 8px 40px rgba(254, 171, 23, 0.2);
@@ -6244,7 +6252,6 @@ strong {
       font-size: 30px; } }
 
 .section-title {
-  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -6263,7 +6270,7 @@ strong {
   font-size: 30px;
   line-height: 35px;
   color: #322823;
-  z-index: 0; }
+  z-index: -1; }
   @media (max-width: 1024px) {
     .section-title {
       font-size: 26px; } }

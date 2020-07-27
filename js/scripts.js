@@ -176,41 +176,76 @@ function maskPhone(selector, masked = "+7 (___) ___-__-__") {
 }
 
 //Подсказка
-const helperDestop = () => {
-  const formula = document.querySelector(".formula"),
-    formulaItems = document.querySelectorAll(".formula-item__icon-inner-text");
+const helper = (containerSelector, elements, popup, activeClass, activeClassFor) => {
+  console.log('activeClass: ', activeClass);
+  const container = document.querySelector(containerSelector),
+    items = document.querySelectorAll(elements);
 
-  formula.addEventListener("mouseover", (event) => {
+  function getPosition(element) {
+    let yPosition = 0;
+
+    while (element) {
+      yPosition += element.offsetTop - element.scrollTop + element.clientTop;
+      element = element.offsetParent;
+    }
+
+    return yPosition;
+  }
+
+  container.addEventListener("mouseover", (event) => {
     const target = event.target;
+    
 
-    if (target.closest(".formula-item__icon-inner-text")) {
-      formulaItems.forEach((element) => {
-        if (element === target) {
-          const link = formula.querySelector(
-            ".formula-item-popup-" + element.textContent
-          );
+    if (target.closest(elements)) {
+      const targetElement = target.closest(elements);
 
+      targetElement.style.color ="#fff";
+
+      items.forEach((element) => {
+        if (element === targetElement.closest(elements)) {
+          const link = targetElement.parentNode.querySelector(popup);
+          link.setAttribute("style", "");
           link.style.visibility = "visible";
-          link.parentNode.parentNode.classList.add("active-item");
+          link.parentNode.parentNode
+            .querySelector(activeClassFor)
+            .classList.add(activeClass);
+
           link.style.opacity = 1;
+
+          if (window.scrollY <= getPosition(link)) {
+            link.classList.remove("transform");
+          } else {
+            link.style.paddingTop = "35px";
+            link.style.top = "155px";
+            link.classList.add("transform");
+          }
         }
       });
     }
   });
 
-  formula.addEventListener("mouseout", (event) => {
+  container.addEventListener("mouseout", (event) => {
     const target = event.target;
 
-    if (target.closest(".formula")) {
-      formulaItems.forEach((element) => {
-        const link = formula.querySelector(
-          ".formula-item-popup-" + element.textContent
-        );
+    if (target.closest(elements)) {
+      const targetElement = target.closest(elements);
 
-        link.parentNode.parentNode.classList.remove("active-item");
-        link.style.visibility = "hidden";
+      targetElement.style.color = "#000";
+
+      items.forEach((element) => {
+        if (element === targetElement.closest(elements)) {
+          const link = targetElement.parentNode.querySelector(popup);
+          link.setAttribute("style", "");
+          link.style.visibility = "visible";
+          link.parentNode.parentNode
+            .querySelector(activeClassFor)
+            .classList.remove(activeClass);
+
+          link.setAttribute("style", "");
+        }
       });
     }
+
   });
 };
 
@@ -379,19 +414,7 @@ const tempFunc = () =>{
   const listInputPhone = document.querySelectorAll("input[name='phone']");
   listInputPhone.forEach((elem) => maskPhone(elem.id));
 
-  //Подсказка
-  if (document.documentElement.clientWidth >= 1025) {
-    helperDestop();
-  } else {
-    new Slider({
-      containerId: "formula",
-      slidersSelector: ".formula-slider__slide",
-      arrowLeft: "#formula-arrow_left",
-      arrowRight: "#formula-arrow_right",
-      activeClass: "active-item",
-      display: "flex",
-    }).init();
-  }
+  
 
   //Слайдер: Виды ремонта
   let sliderRepairDop = new Slider({
@@ -609,13 +632,7 @@ const tempFunc = () =>{
     type: "transform",
   });
   sliderDisingCarousel.init();
-}
 
-
-document.addEventListener("DOMContentLoaded", () => {
-  tempFunc(); //временная функция
-
-  
 
   //Табы + слайдер (Модальное окно)
   let sliderDisingModal = new Slider({
@@ -663,4 +680,43 @@ document.addEventListener("DOMContentLoaded", () => {
      
    }
  });
+ let sliderDisingModalCarousel = new Slider({
+   containerId: "popup-design",
+   slidersSelector: ".nav-list > button",
+   arrowLeft: "#nav-arrow-popup-designs_left",
+   arrowRight: "#nav-arrow-popup-designs_right",
+   type: "transform",
+ });
+ sliderDisingModalCarousel.init();
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  tempFunc(); //временная функция
+
+  
+  //Подсказка
+  if (document.documentElement.clientWidth >= 1025) {
+    helper(".formula", ".formula-item__icon-inner-text", ".formula-item-popup", "active-item", ".formula-item__icon-inner");
+    helper(".problems", ".svg-wrap", ".problems-item-popup", "active-item", ".problems-item__icon-inner");
+
+  } else {
+    new Slider({
+      containerId: "formula",
+      slidersSelector: ".formula-slider__slide",
+      arrowLeft: "#formula-arrow_left",
+      arrowRight: "#formula-arrow_right",
+      activeClass: "active-item",
+      display: "flex",
+    }).init();
+
+    new Slider({
+      containerId: "problems",
+      slidersSelector: ".problems-slider__slide",
+      arrowLeft: "#problems-arrow_left",
+      arrowRight: "#problems-arrow_right",
+      activeClass: "active-item",
+      display: "flex",
+    }).init();
+  }
 });
