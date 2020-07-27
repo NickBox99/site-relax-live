@@ -828,4 +828,51 @@ document.addEventListener("DOMContentLoaded", () => {
  });
  sliderSchemeModalCarousel.init();
 
+ //Ajax
+  const sendForm = (id) => {
+    const postData = (body) => {
+      return fetch("./server.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+    };
+
+    const form = document.getElementById(id);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let countPoints = 0; 
+
+      const formData = new FormData(form);
+      let body = {};
+      formData.forEach((val, key) => {
+        body[key] = val;
+      });
+
+      postData(body)
+        .then((response) => {
+          if (response.status !== 200) {
+            throw new Error("Ошибка в отправки fetch");
+          }
+          const elements = form.elements;
+          for (let i = 0; i < elements.length; i++) {
+            elements[i].value = "";
+          }
+          console.log(123);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
+  };
+
+  sendForm("feedback1");
+  // sendForm("feedback-input2");
+  // sendForm("feedback-input3");
+  // sendForm("feedback-input4");
+  // sendForm("feedback-input5");
+  // sendForm("feedback-input6");
 });
