@@ -532,15 +532,31 @@ const tempFunc = () =>{
   }
 
   //Слайдер: Документы
+  const docSlider = new Slider({
+    containerId: "transparency",
+    slidersSelector: ".transparency-item",
+    arrowLeft: "#transparency-arrow_left",
+    arrowRight: "#transparency-arrow_right",
+    display: "flex",
+    visibleSlide: 1,
+  });
   if (document.documentElement.clientWidth <= 1090){
-    new Slider({
-      containerId: "transparency",
-      slidersSelector: ".transparency-item",
-      arrowLeft: "#transparency-arrow_left",
-      arrowRight: "#transparency-arrow_right",
-      display: "flex",
-    }).init();
+    docSlider.visibleSlide = 1;
+  }else{
+    docSlider.visibleSlide = 3;
   }
+  docSlider.init();
+
+  window.addEventListener(`resize`, event => {
+    if (document.documentElement.clientWidth <= 1090) {
+      docSlider.visibleSlide = 1;
+    } else {
+      docSlider.visibleSlide = 3;
+    }
+    docSlider.init();
+  }, false);
+
+
   const openDocSlider = new Slider({
     containerId: "popup-transparencyId",
     slidersSelector: ".popup-transparency-slider__slide",

@@ -5157,7 +5157,7 @@ div.wave-block:nth-child(17):after {
     position: absolute;
     top: 50%;
     margin-top: -8px;
-    z-index: 1;
+    z-index: 100;
     cursor: pointer; }
     @media (max-width: 575px) {
       .slider-arrow-tablet-mobile {
