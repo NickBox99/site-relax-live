@@ -606,7 +606,7 @@ const tempFunc = () =>{
     } else {
       docSlider.visibleSlide = 3;
     }
-    docSlider.init();
+    docSlider.setVisibleSlide();
   }, false);
 
 
