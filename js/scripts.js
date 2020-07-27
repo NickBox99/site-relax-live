@@ -716,14 +716,8 @@ const tempFunc = () =>{
    type: "transform",
  });
  sliderDisingModalCarousel.init();
-}
 
-
-document.addEventListener("DOMContentLoaded", () => {
-  tempFunc(); //временная функция
-
-  
-  //Подсказка
+ //Подсказка
   if (document.documentElement.clientWidth >= 1025) {
     helper(".formula", ".formula-item__icon-inner-text", ".formula-item-popup", "active-item", ".formula-item__icon-inner");
     helper(".problems", ".svg-wrap", ".problems-item-popup", "active-item", ".problems-item__icon-inner");
@@ -747,4 +741,37 @@ document.addEventListener("DOMContentLoaded", () => {
       display: "flex",
     }).init();
   }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  tempFunc(); //временная функция
+
+  //Табы 2
+  let sliderSchemeModal = new Slider({
+    containerId: "scheme",
+    slidersSelector: ".scheme-slider > div",
+    bottons: ".nav-list > button",
+    display: "block",
+    activeClassToButton: "active",
+  });
+  sliderSchemeModal.init();
+
+  let sliderSchemeModal2 = new Slider({
+    containerId: "scheme",
+    slidersSelector: ".scheme-description-block",
+    bottons: ".nav-list > button",
+    display: "block",
+    activeClass: "visible-content-block",
+  });
+  sliderSchemeModal2.init();
+
+ let sliderSchemeModalCarousel = new Slider({
+   containerId: "scheme",
+   slidersSelector: ".nav-list > button",
+   arrowLeft: "#nav-arrow-scheme_left",
+   arrowRight: "#nav-arrow-scheme_right",
+   type: "transform",
+ });
+ sliderSchemeModalCarousel.init();
 });
