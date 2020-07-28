@@ -3,7 +3,7 @@ import "nodelist-foreach-polyfill";
 import elementClosest from "element-closest";
 elementClosest(window);
 
-// import "formdata-polyfill";
+import "formdata-polyfill";
 import "es6-promise";
 import "fetch-polyfill";
 
@@ -415,7 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-
+      console.log(11111111);
       if (!checker(id)) {
         console.error("Данные не заполнены");
         return;
@@ -432,6 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (response.status !== 200) {
             throw new Error("Ошибка в отправки fetch");
           }
+          console.log(12344);
           const elements = form.elements;
           for (let i = 0; i < elements.length; i++) {
             elements[i].value = "";
@@ -462,7 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
       phone.setAttribute("style", "");
     }
 
-    if (name && name.value.length === 0) {
+    if (name && (name.value.length === 0 || /[0-9]/.test(name.value))) {
       name.style.color = "red";
       return false;
     } else if (name) {

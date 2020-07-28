@@ -50,7 +50,10 @@ const modalAddEventListener = () => {
     }
     //плавный скрол для элементов бургера
     else if (target.closest(".popup-menu-nav__item")) {
-      scroll(target.getAttribute("href"));
+      const href = target.getAttribute("href");
+      if (href){
+        scroll(target.getAttribute("href"));
+      }
     }
     //плавный скрол для кнопки ВВЕРХ
     else if (target.closest("." + btnFooter.classList[0])) {

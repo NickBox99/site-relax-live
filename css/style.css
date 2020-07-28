@@ -1462,7 +1462,7 @@ template, [hidden] {
         background-color: transparent; }
       .feedback-block__form-input_name {
         position: relative;
-        color: #ffffff !important; }
+        color: #ffffff; }
       .feedback-block__form-input_phone {
         position: relative;
         width: 290px;
