@@ -2,5 +2,5 @@
 Тестовый сайт
 
 ```
-Ссылка на GitHub Pages - https://nickbox99.github.io/Site-repair-design/
+Ссылка на GitHub Pages - https://nickbox99.github.io/Site-Relax-Live/
 ```
